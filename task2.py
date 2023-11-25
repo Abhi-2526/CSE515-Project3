@@ -15,7 +15,7 @@ import seaborn as sns
 
 
 #load caltech dataset
-dataset = torchvision.datasets.Caltech101("../CSE515-Project3/") #set download to true if it is not already in the folder
+dataset = torchvision.datasets.Caltech101("../CSE515-Project3/", download = True) #set download to true if it is not already in the folder
 labels_caltech101 = np.array([dataset[i][1] for i in range(len(dataset))])
 downdata_loader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=True, num_workers=8)
 label_name_to_idx = {name: idx for idx, name in enumerate(dataset.categories)}
@@ -144,14 +144,14 @@ Plot image and 2D graph code
 
 #plot image thumbnails
 def plotImageThumbnails(imageIDList):
-    fig = plt.figure(figsize=(15, 2* ceil(len(imageIDList))/10))
+    fig = plt.figure(figsize=(25, 10* ceil(len(imageIDList))/15))
     plt.axis('off')
     for i in range(len(imageIDList)):
-        fig.add_subplot(ceil(len(imageIDList)/10), 10, i+1)
+        fig.add_subplot(ceil(len(imageIDList)/15), 15, i+1)
         im =  np.asarray(dataset[2*imageIDList[i]][0])
         plt.axis('off')
         plt.imshow(im)
-        plt.title("id = " + str(2*imageIDList[i]))
+        plt.title("id = " + str(2*imageIDList[i]), fontsize = 10)
     plt.show()
 
 #plot 2D MDS graph
@@ -270,7 +270,7 @@ def getClusterLabel(cluster):
 
 
 def task_2a(c, l):
-    print("Label = " + str(l) + "(" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(l)] + ")")
+    print("\nLabel ID= " + str(l) + " (" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(l)] + ")")
     evenImageLabelList = []
     for i in range(int(ceil(len(labels_caltech101)/2))):
         evenImageLabelList.append(labels_caltech101[2*i])
@@ -288,7 +288,7 @@ def task_2a(c, l):
         print("F1 Score: " + str(calculateF1Score(l, clust, evenImageLabelList)))
     
     fcMDS = torch.load("./fcMDS.pt")
-    plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "FC")
+    plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
     for clust in clusters:
         plotImageThumbnails(clust)
 
