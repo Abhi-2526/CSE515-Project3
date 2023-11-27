@@ -307,7 +307,7 @@ def task_2b(id, c):
 def task_2c():
     total = 0
     for i in range(len(relaxed_fcCluster_calculated)):
-        print("\nLabel " + str(i) + " (" + + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(i)] + ")")
+        print("\nLabel " + str(i) + " (" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(i)] + ")")
         total += calcuateLabelAccuracy(i, relaxed_fcCluster_calculated[i], evenImageLabelList)
         print("Precision: " + str(calculateLabelPrecision(i, relaxed_fcCluster_calculated[i], evenImageLabelList)))
         print("Recall: " + str(calculateLabelRecall(i, relaxed_fcCluster_calculated[i], evenImageLabelList)))
