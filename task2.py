@@ -304,19 +304,35 @@ def task_2b(id, c):
             label = getClusterLabel(clust)
             print(str(i) + ". " + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(label)])
 
+def task_2c():
+    total = 0
+    for i in range(len(relaxed_fcCluster_calculated)):
+        print("\nLabel " + str(i) + " (" + + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(i)] + ")")
+        total += calcuateLabelAccuracy(i, relaxed_fcCluster_calculated[i], evenImageLabelList)
+        print("Precision: " + str(calculateLabelPrecision(i, relaxed_fcCluster_calculated[i], evenImageLabelList)))
+        print("Recall: " + str(calculateLabelRecall(i, relaxed_fcCluster_calculated[i], evenImageLabelList)))
+        print("F1 Score: " + str(calculateF1Score(i, relaxed_fcCluster_calculated[i], evenImageLabelList)))
 
-while True:
-    choice = str(input("Please enter the task you want to execute (2a/2b): "))
-    if choice == "2a":
-        c = int(input("Please enter number of relevant clusters you want: "))
-        l = int(input("Please enter the label ID you would like to create clusters for: "))
-        task_2a(c, l)
-    elif choice == "2b":
-        id = int(input("Please enter the odd image ID you would like to visualize clusters for: "))
-        while id%2 != 1:
-                id = int(input("Please enter an ODD image ID: "))
-        c = int(input("Please enter the number of relevant lables you want: "))
-        task_2b(id, c)
-    else:
-        print("Invalid input")
+    print("\nOverall Accuracy: " + str(total/len(relaxed_fcCluster_calculated)))
+
+def run_task2():
+    while True:
+        choice = str(input("Please enter the task you want to execute (2a/2b/2c): "))
+        if choice == "2a":
+            c = int(input("Please enter number of relevant clusters you want: "))
+            l = int(input("Please enter the label ID you would like to create clusters for: "))
+            task_2a(c, l)
+            break
+        elif choice == "2b":
+            id = int(input("Please enter the odd image ID you would like to visualize clusters for: "))
+            while id%2 != 1:
+                    id = int(input("Please enter an ODD image ID: "))
+            c = int(input("Please enter the number of relevant lables you want: "))
+            task_2b(id, c)
+            break
+        elif choice == "2c":
+            task_2c()
+            break
+        else:
+            print("Invalid input. Please choose 2a/2b/2c")
         
