@@ -26,7 +26,6 @@ FCOddData = torch.load("./FCOddData.pt") #odd ResNet FC data
 evenImageLabelList = []
 for i in range(int(ceil(len(labels_caltech101)/2))):
     evenImageLabelList.append(labels_caltech101[2*i])
-
 #FCdissimilarityMatrix = torch.load("./FCdissimilarityMatrix.pt")
 fcMDS = torch.load("./fcMDS.pt")
 relaxed_fcCluster_calculated = torch.load("./fcClusters_Calculated.pt")
@@ -279,19 +278,17 @@ def task_2a(c, l):
     clusters = computeRelevantClusters(c, l)
     print(str(c) + " most relevant clusters:")
     i = 0
-    for clust in clusters:
-        i += 1
-        print("\nCluster: " + str(i))
-        print([x * 2 for x in clust])
-        print("Accuracy: " + str(calcuateLabelAccuracy(l, clust, evenImageLabelList)))
-        print("Precision: " + str(calculateLabelPrecision(l, clust, evenImageLabelList)))
-        print("Recall: " + str(calculateLabelRecall(l, clust, evenImageLabelList)))
-        print("F1 Score: " + str(calculateF1Score(l, clust, evenImageLabelList)))
-    
-    fcMDS = torch.load("./fcMDS.pt")
-    plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
+
+    #doesn't seem like we need to compute accuracy for the predictions
+    #for clust in clusters:
+        #i += 1
+        #print("\nCluster: " + str(i))
+        #print([x * 2 for x in clust])
+        #print("Accuracy: " + str(calcuateLabelAccuracy(l, clust, evenImageLabelList)))
     for clust in clusters:
         plotImageThumbnails(clust)
+    fcMDS = torch.load("./fcMDS.pt")
+    plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
 
 def task_2b(id, c):
     if id%2 == 0: 
