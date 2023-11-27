@@ -26,7 +26,7 @@ FCOddData = torch.load("./FCOddData.pt") #odd ResNet FC data
 evenImageLabelList = []
 for i in range(int(ceil(len(labels_caltech101)/2))):
     evenImageLabelList.append(labels_caltech101[2*i])
-FCdissimilarityMatrix = torch.load("./FCdissimilarityMatrix.pt")
+#FCdissimilarityMatrix = torch.load("./FCdissimilarityMatrix.pt")
 fcMDS = torch.load("./fcMDS.pt")
 relaxed_fcCluster_calculated = torch.load("./fcClusters_Calculated.pt")
 corePointsFC = torch.load("./T2corePoints.pt")
@@ -281,7 +281,7 @@ def task_2a(c, l):
     for clust in clusters:
         i += 1
         print("\nCluster: " + str(i))
-        print([x * 2 for x in clust])
+        #print([x * 2 for x in clust])
         print("Accuracy: " + str(calcuateLabelAccuracy(l, clust, evenImageLabelList)))
         print("Precision: " + str(calculateLabelPrecision(l, clust, evenImageLabelList)))
         print("Recall: " + str(calculateLabelRecall(l, clust, evenImageLabelList)))
@@ -293,20 +293,30 @@ def task_2a(c, l):
         plotImageThumbnails(clust)
 
 def task_2b(id, c):
-    if id%2 == 0: 
-        print("Please enter an even ID")
-    else:
-        clusters = computeRelevantClusters(c, labels_caltech101[id])
-        i = 0
-        print(str(c) + " most relevant labels for image id = " + str(id))
-        for clust in clusters:
-            i += 1
-            label = getClusterLabel(clust)
-            print(str(i) + ". " + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(label)])
+    clusters = computeRelevantClusters(c, labels_caltech101[id])
+    i = 0
+    print(str(c) + " most relevant labels for image id = " + str(id))
+    for clust in clusters:
+        i += 1
+        label = getClusterLabel(clust)
+        print(str(i) + ". " + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(label)])
 
+def task_2c():
+    #compute overall accuracy
+    clusters = torch.load("./fcClusters_Calculated.pt")
+    total = 0
+    for i in range(len(clusters)):
+        print("\nLabel ID= " + str(i) + " (" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(i)] + ")")
+        print("Precision: " + str(calculateLabelPrecision(i, clusters[i], evenImageLabelList)))
+        print("Recall: " + str(calculateLabelRecall(i, clusters[i], evenImageLabelList)))
+        print("F1 Score: " + str(calculateF1Score(i, clusters[i], evenImageLabelList)))
+        total += calcuateLabelAccuracy(i, clusters[i], evenImageLabelList)
+    overallAccuracy = total/len(clusters)
+
+    print("\nOverall Accuracy: " + str(overallAccuracy))
 
 while True:
-    choice = str(input("Please enter the task you want to execute (2a/2b): "))
+    choice = str(input("Please enter the task you want to execute (2a/2b/2c): "))
     if choice == "2a":
         c = int(input("Please enter number of relevant clusters you want: "))
         l = int(input("Please enter the label ID you would like to create clusters for: "))
@@ -317,6 +327,8 @@ while True:
                 id = int(input("Please enter an ODD image ID: "))
         c = int(input("Please enter the number of relevant lables you want: "))
         task_2b(id, c)
+    elif choice == "2c":
+        task_2c()
     else:
         print("Invalid input")
         
