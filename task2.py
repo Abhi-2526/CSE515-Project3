@@ -26,7 +26,8 @@ FCOddData = torch.load("./FCOddData.pt") #odd ResNet FC data
 evenImageLabelList = []
 for i in range(int(ceil(len(labels_caltech101)/2))):
     evenImageLabelList.append(labels_caltech101[2*i])
-FCdissimilarityMatrix = torch.load("./FCdissimilarityMatrix.pt")
+
+#FCdissimilarityMatrix = torch.load("./FCdissimilarityMatrix.pt")
 fcMDS = torch.load("./fcMDS.pt")
 relaxed_fcCluster_calculated = torch.load("./fcClusters_Calculated.pt")
 corePointsFC = torch.load("./T2corePoints.pt")
