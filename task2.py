@@ -11,7 +11,9 @@ import pandas as pd
 from PIL import Image
 from scipy.spatial.distance import directed_hausdorff
 from sklearn.manifold import MDS
-import seaborn as sns         
+import seaborn as sns
+import warnings
+warnings.filterwarnings("ignore")         
 
 
 #load caltech dataset
@@ -53,8 +55,9 @@ def computeDissimilarityMatrix(data):
     return matrix
 
 #calculate MDS 2D coordinates
-def calculatePlotMDS(dm, X, y):
-    embedding = MDS(n_components=2, dissimilarity='precomputed', random_state=0)
+def calculatePlotMDS(dm):
+    embedding = MDS(n_components=2, dissimilarity='precomputed', random_state=0, normalized_stress=False)
+    #embedding = MDS(n_components=2, dissimilarity='precomputed', random_state=0)
     X_transformed = embedding.fit_transform(dm)
     
     return X_transformed
@@ -287,8 +290,29 @@ def task_2a(c, l):
         #print("Accuracy: " + str(calcuateLabelAccuracy(l, clust, evenImageLabelList)))
     for clust in clusters:
         plotImageThumbnails(clust)
-    fcMDS = torch.load("./fcMDS.pt")
-    plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
+
+        #fcMDS = torch.load("./fcMDS.pt")
+        #plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
+
+    d = FCEvenData[clusters[0][0]]
+    for i in range(1, len(clusters[0])):
+            d = np.vstack((d, FCEvenData[clusters[0][i]]))
+
+    for clust in range(1, len(clusters)):
+        for i in range(len(clusters[clust])):
+            d = np.vstack((d, FCEvenData[clusters[clust][i]]))
+
+    #print(d.shape)
+    dm = computeDissimilarityMatrix(d)
+    mds = calculatePlotMDS(dm)
+    lab = []
+    for clust in range(len(clusters)):
+        for i in range(len(clusters[clust])):
+            lab.append(clust)
+    print("number of points: " + str(len(lab)))
+    title = "\nLabel ID= " + str(l) + " (" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(l)] + ")"
+    plotClusters(mds, lab, title)
+
 
 def task_2b(id, c):
     if id%2 == 0: 
