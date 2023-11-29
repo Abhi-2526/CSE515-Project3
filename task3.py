@@ -197,11 +197,7 @@ odd_features, odd_labels = utils.load_odd_images_and_labels('caltech101_features
 # Standardize odd features
 X_odd = scaler.transform(odd_features)
 y_odd = np.array(odd_labels)
-if flag ==2 : 
-    odd_labels = np.array(odd_labels) 
-    # evaluation_results = classifier.predict_and_evaluate(odd_features, odd_labels)
-    # print(evaluation_results)
-    classifier.predict_and_evaluate(odd_features, odd_labels)
+
 # Predict labels for odd-numbered images
 if flag ==1 :
     predicted_labels = classifier.predict(X_odd)
@@ -215,3 +211,8 @@ if flag ==1 :
     print("\nClassification Report for Odd-Numbered Images:")
     print(classification_report(y_odd, predicted_labels, labels=np.unique(y_odd)))
     print("Overall Accuracy:", accuracy_score(y_odd, predicted_labels))
+if flag ==2 : 
+    odd_labels = np.array(odd_labels) 
+    # evaluation_results = classifier.predict_and_evaluate(odd_features, odd_labels)
+    # print(evaluation_results)
+    classifier.predict_and_evaluate(odd_features, odd_labels)
