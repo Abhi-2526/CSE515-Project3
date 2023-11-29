@@ -33,8 +33,6 @@ fcMDS = torch.load("./fcMDS.pt")
 relaxed_fcCluster_calculated = torch.load("./fcClusters_Calculated.pt")
 corePointsFC = torch.load("./T2corePoints.pt")
 
-
-
 def compare_features(query_features, database_features):
     dot_product = np.dot(query_features, database_features)
     norm_a = np.linalg.norm(query_features)
@@ -204,7 +202,7 @@ def calculateLabelPrecision(label, cluster, labelIndexList):
     return precision
 
 def calculateLabelRecall(label, cluster, labelIndexList):
-    #true postives/(true postitives + false positives)
+    #true postives/(true postitives + false negatives)
     labelList = getLabelList(labelIndexList, label)
     truePositives = list(set(labelList) & set(cluster))
     falseNegatives = list(set(labelList) - set(cluster))
@@ -229,7 +227,7 @@ def calcuateLabelAccuracy(label, cluster, labelIndexList):
     numTrueNegatives = len(labelIndexList) - len(truePositives) - len(falseNegatives) - len(falsePositives)
     accuracy = (len(truePositives) + numTrueNegatives)/ len(labelIndexList)
     return accuracy
-
+    
 
 def computeRelevantClusters(c, label):
     data = torch.load("./FCEvenData.pt")
@@ -288,11 +286,9 @@ def task_2a(c, l):
         #print("\nCluster: " + str(i))
         #print([x * 2 for x in clust])
         #print("Accuracy: " + str(calcuateLabelAccuracy(l, clust, evenImageLabelList)))
-    for clust in clusters:
-        plotImageThumbnails(clust)
 
-        #fcMDS = torch.load("./fcMDS.pt")
-        #plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
+    #fcMDS = torch.load("./fcMDS.pt")
+    #plotClusters(getClusterCoordinateList(clusters, fcMDS), getPlotLabelList(clusters), "Clusters for label " + str(l))
 
     d = FCEvenData[clusters[0][0]]
     for i in range(1, len(clusters[0])):
@@ -309,9 +305,12 @@ def task_2a(c, l):
     for clust in range(len(clusters)):
         for i in range(len(clusters[clust])):
             lab.append(clust)
-    print("number of points: " + str(len(lab)))
+    #print("number of points: " + str(len(lab)))
     title = "\nLabel ID= " + str(l) + " (" + list(label_name_to_idx.keys())[list(label_name_to_idx.values()).index(l)] + ")"
     plotClusters(mds, lab, title)
+
+    for clust in clusters:
+        plotImageThumbnails(clust)
 
 
 def task_2b(id, c):
@@ -341,8 +340,12 @@ def run_task2():
     while True:
         choice = str(input("Please enter the task you want to execute (2a/2b/2c): "))
         if choice == "2a":
+            l = int(input("Please enter the label ID you would like to create clusters for (0-100): "))
+            while l > 100 or l < 0:
+                int(input("Invalid Input. Please enter the label ID you would like to create clusters for (0-100): "))
             c = int(input("Please enter number of relevant clusters you want: "))
-            l = int(input("Please enter the label ID you would like to create clusters for: "))
+            while c < 1:
+                c = int(input("Invalid Input. Please enter number of relevant clusters you want (>=1): "))
             task_2a(c, l)
             break
         elif choice == "2b":
