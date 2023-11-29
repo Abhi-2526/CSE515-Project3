@@ -26,5 +26,5 @@ To run the system: “python3 main.py”
 Please select from below list:
 `0a/0b/1/2a/2b/3/4/5`
 4. Note: This program is not stopping until you stop manually, so you can try options in a better experience.
-5. Stop the code: Just Ctrl+C
+5. Stop the code: Just Enter q
 
