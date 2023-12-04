@@ -56,35 +56,42 @@ class PersonalizedPageRankClassifier:
         return ppr
 
     def run(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=RuntimeWarning)
-            warnings.simplefilter("ignore", category=UndefinedMetricWarning)
+        with open(f"PPROutput{self.alpha}.txt", 'w') as f:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", category=RuntimeWarning)
+                warnings.simplefilter("ignore", category=UndefinedMetricWarning)
 
-        even_features, even_labels = utils.load_even_images_and_labels(self.db_path)
-        odd_features, odd_labels = utils.load_odd_images_and_labels(self.db_path)
-        # odd_features = odd_features[600:610]
-        # odd_labels = odd_labels[600:610]
+            even_features, even_labels = utils.load_even_images_and_labels(self.db_path)
+            odd_features, odd_labels = utils.load_odd_images_and_labels(self.db_path)
+            # odd_features = odd_features[600:610]
+            # odd_labels = odd_labels[600:610]
 
-        similarity_graph = self.compute_similarity_graph(even_features)
-        predicted_labels = []
+            similarity_graph = self.compute_similarity_graph(even_features)
+            predicted_labels = []
 
-        for index, odd_feature in enumerate(odd_features):
-            restart_vector = self.compute_restart_vector(odd_feature, even_features)
-            ppr_scores = self.personalized_page_rank(similarity_graph, restart_vector)
-            top_index = np.argmax(ppr_scores)
-            predicted_label = even_labels[top_index]
-            predicted_labels.append(predicted_label)
-            # Generate odd image IDs
-            odd_image_ids = np.arange(1, len(odd_features) * 2, 2)
-            for image_id, label in zip(odd_image_ids, predicted_labels):
-                print(f"Odd Image ID {image_id}: Predicted Label - {label}")
+            for index, odd_feature in enumerate(odd_features):
+                restart_vector = self.compute_restart_vector(odd_feature, even_features)
+                ppr_scores = self.personalized_page_rank(similarity_graph, restart_vector)
+                top_index = np.argmax(ppr_scores)
+                predicted_label = even_labels[top_index]
+                predicted_labels.append(predicted_label)
+                # Generate odd image IDs
+                odd_image_ids = np.arange(1, len(odd_features) * 2, 2)
+                for image_id, label in zip(odd_image_ids, predicted_labels):
+                    output = f"Odd Image ID {image_id}: Predicted Label - {label}"
+                    print(output)
+                    f.write(output + '\n')
 
-        print("\nClassification Report:")
-        print(classification_report(odd_labels, predicted_labels, zero_division=0))
+            output = "\nClassification Report:"
+            output += classification_report(odd_labels, predicted_labels, zero_division=0)
+            print(output)
+            f.write(output)
 
-        # precision, recall, fscore, _ = precision_recall_fscore_support(odd_labels, predicted_labels, average='micro', zero_division=0)
-        accuracy = accuracy_score(odd_labels, predicted_labels)
-        print(f'accuracy = {accuracy}')
+            # precision, recall, fscore, _ = precision_recall_fscore_support(odd_labels, predicted_labels, average='micro', zero_division=0)
+            accuracy = accuracy_score(odd_labels, predicted_labels)
+            output = f'accuracy = {accuracy}'
+            print(output) 
+            f.write(output)
 
 
 class CustomKNN:
